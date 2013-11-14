@@ -77,8 +77,8 @@
 			canvasObj.addEventListener("touchmove", function(evt) {
 	
 				evt.preventDefault();
-                var x = evt.touches[0].pageX / screenWidth  * screenWidth;
-				var y = evt.touches[0].pageY / screenHeight * screenHeight;
+                var x = evt.touches[0].pageX;
+				var y = evt.touches[0].pageY;
 				console.log( x + "," + y );
 
                 // 畫線
