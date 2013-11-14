@@ -5,7 +5,7 @@ draw_to_other
 
 youtube 影片
 
-[![youtube 影片](http://img.youtube.com/vi/-qqQIr7wij4/0.jpg)](http://www.youtube.com/watch?v=-qqQIr7wij4)
+[![youtube 影片](http://img.youtube.com/vi/_-YAotdwXSM/0.jpg)](http://www.youtube.com/watch?v=_-YAotdwXSM)
 
 A、說明
 
