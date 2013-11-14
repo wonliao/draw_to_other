@@ -65,30 +65,23 @@
 		{
 			console.log('onDeviceReady');
             
-            
-
-            console.log('onDeviceReady2');
-
+            // 準備 websocket
 			websocket = new WebSocket(wsUri);
 			websocket.onopen = function(evt) { onOpen(evt) };
 			websocket.onclose = function(evt) { onClose(evt) };
 			websocket.onmessage = function(evt) { onMessage(evt) };
 			websocket.onerror = function(evt) { onError(evt) };
 			
-console.log("screenWidth("+screenWidth+") screenHeight("+screenHeight+")");
-			
-			// 畫圖
+		
+			// 偵測手指接觸並畫圖
 			canvasObj.addEventListener("touchmove", function(evt) {
 	
 				evt.preventDefault();
                 var x = evt.touches[0].pageX / screenWidth  * screenWidth;
 				var y = evt.touches[0].pageY / screenHeight * screenHeight;
-                                       
-                
 				console.log( x + "," + y );
 
-
-
+                // 畫線
 				context.strokeStyle = "rgba(255, 255, 255, 1)";
 				context.lineWidth = 10;
 				context.lineCap = "round";
@@ -105,25 +98,25 @@ console.log("screenWidth("+screenWidth+") screenHeight("+screenHeight+")");
 				oldX = x;
 				oldY = y;
 
-                                       
+                // 座標先轉換成百分比後，再傳給 server
                 var sendX = x / screenWidth;
                 var sendY = y / screenHeight;
 				websocket.send( sendX + "," + sendY );
 	
 			}, false);
 			
+            // 將結束畫線的訊息傳給 server
 			canvasObj.addEventListener("touchend", function() {
 				drawFlag = false;
 				oldX = 0;
 				oldY = 0;
 				websocket.send( "end" ); 
 			}, false);
-			
+
 			setTimeout( function() { 
 				scrollTo(0, 1);
 			}, 100);
-			
-			
+
 			// 清除螢幕 
 			var clearObj = document.getElementById("clear_btn");
 			clearObj.addEventListener("touchend", function(evt) {
@@ -142,23 +135,26 @@ console.log("screenWidth("+screenWidth+") screenHeight("+screenHeight+")");
 			console.log("DISCONNECTED"); 
 		}
 		
-		function onMessage(evt) { 
+        // 接收到 server 傳來的訊息
+		function onMessage(evt) {
+
 			console.log( "onMessage:" + evt.data );
 			
 			switch( evt.data ) {
 			case "clear":
+                // 清除螢幕
 				context.clearRect(0, 0, screenWidth, screenHeight);
 				break;
 			case "end":
+                // 對方結束畫線的訊息
 				oldX = 0;
 				oldY = 0;
 				break;
 			default:
-
+                // 收到對方的座標百分比，先轉換成 px 後再開始畫線
 				var temp = evt.data.split(",");
                 var x = temp[0] * screenWidth;
 				var y = temp[1] * screenHeight;
-                
 				console.log( x + "," + y );
 		
 				if( oldX == 0 ) oldX = x;
